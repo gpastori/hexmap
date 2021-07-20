@@ -3,18 +3,23 @@ const canvas = document.getElementById('mappa');
 const ctx = canvas.getContext('2d');
 const a = 2 * Math.PI / 6; 
 const r = 40;
+const scarto = r-r*Math.sin(a);
 
 function disegnaMappaPulsante() {
-    disegnaMappa(document.getElementById("lunghezzaMappa").value,document.getElementById("larghezzaMappa").value); 
+    disegnaMappa(document.getElementById("larghezzaMappa").value,document.getElementById("altezzaMappa").value); 
 }
 
-function disegnaMappa(hexX, hexY){
+function disegnaMappa(larg, alt){
+	//alert("Altezza: "+calcolaAltezza(hexX, hexY));
+	//alert("Larghezza: "+calcolaLarghezza(hexX, hexY))
+	canvas.width = calcolaLarghezza(larg, alt);
+	canvas.height = calcolaAltezza(larg, alt);
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	let posX= r;
+	let posX= r+scarto;
 	let posY= r;
-	for(var i = 0; i<hexY; i++){
+	for(var i = 0; i<alt; i++){
 		let alt = 0;
-		for (var j = 0; j<hexX; j++){
+		for (var j = 0; j<larg; j++){
 			//Disegno l'hex con centro x,y
 			disegnaHex(posX,posY);
 			//alert("PosX:"+posX+" posY:"+posY);
@@ -23,9 +28,25 @@ function disegnaMappa(hexX, hexY){
 			posY = posY + (r*Math.sin(a)* (-1)**alt)
 			alt++;
 		}
-		posX= r;
+		posX= r+scarto;
 		posY= r + (2*r*Math.sin(a))*(i+1);
 	}	
+}
+
+function calcolaLarghezza(x,y){
+	if (x%2 == 0){
+		return 3*r*(x/2) + 2*scarto + r/2;
+	}else{
+		return 3*r*((x-1)/2)+(2*r) +2*scarto;
+	}
+}
+
+function calcolaAltezza(x,y){
+	if (x==1){
+		return 2*r*Math.sin(a)*y + 2*scarto;
+	}else{
+		return 2*r*Math.sin(a)*y+(r*Math.sin(a)) +2*scarto;
+	}
 }
 
 function disegnaHex(x, y) {
